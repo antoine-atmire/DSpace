@@ -208,7 +208,7 @@ public class SolrServiceImpl implements SearchService, IndexingService {
             log.info("Try to delete uniqueID:" + uniqueID);
             indexObjectServiceFactory.getIndexableObjectFactory(indexableObject).delete(indexableObject);
             if (commit) {
-                solrSearchCore.getSolr().commit();
+                commit();
             }
         } catch (Exception exception) {
             log.error(exception.getMessage(), exception);
@@ -243,10 +243,10 @@ public class SolrServiceImpl implements SearchService, IndexingService {
             if (solrSearchCore.getSolr() != null) {
                 indexObjectServiceFactory.getIndexableObjectFactory(searchUniqueID).delete(searchUniqueID);
                 if (commit) {
-                    solrSearchCore.getSolr().commit();
+                    commit();
                 }
             }
-        } catch (SolrServerException e) {
+        } catch (SearchServiceException | SolrServerException e) {
             log.error(e.getMessage(), e);
         }
     }
@@ -327,10 +327,7 @@ public class SolrServiceImpl implements SearchService, IndexingService {
                     }
                 }
             }
-            if (solrSearchCore.getSolr() != null) {
-                solrSearchCore.getSolr().commit();
-            }
-
+            commit();
         } catch (Exception e) {
             log.error(e.getMessage(), e);
         }

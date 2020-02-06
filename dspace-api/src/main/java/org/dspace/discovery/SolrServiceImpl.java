@@ -155,12 +155,9 @@ public class SolrServiceImpl implements SearchService, IndexingService {
     @Override
     public void indexContent(Context context, IndexableObject indexableObject,
                              boolean force) {
-
         try {
-            final IndexFactory indexableObjectFactory = indexObjectServiceFactory.
-                    getIndexableObjectFactory(indexableObject);
             if (force || requiresIndexing(indexableObject.getUniqueIndexID(), indexableObject.getLastModified())) {
-                update(context, indexableObjectFactory, indexableObject);
+                update(context, indexableObject);
                 log.info(LogManager.getHeader(context, "indexed_object", indexableObject.getUniqueIndexID()));
             }
         } catch (Exception e) {
@@ -168,10 +165,11 @@ public class SolrServiceImpl implements SearchService, IndexingService {
         }
     }
 
-    protected void update(Context context, IndexFactory indexableObjectService,
-                          IndexableObject indexableObject) throws IOException, SQLException, SolrServerException {
-        final SolrInputDocument solrInputDocument = indexableObjectService.buildDocument(context, indexableObject);
-        indexableObjectService.writeDocument(context, indexableObject, solrInputDocument);
+    protected void update(Context context, IndexableObject indexableObject) throws IOException, SQLException, SolrServerException {
+        final IndexFactory indexableObjectFactory = indexObjectServiceFactory.
+                getIndexableObjectFactory(indexableObject);
+        final SolrInputDocument solrInputDocument = indexableObjectFactory.buildDocument(context, indexableObject);
+        indexableObjectFactory.writeDocument(context, indexableObject, solrInputDocument);
     }
 
     /**

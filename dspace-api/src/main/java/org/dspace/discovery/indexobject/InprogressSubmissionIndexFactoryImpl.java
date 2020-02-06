@@ -61,6 +61,7 @@ public abstract class InprogressSubmissionIndexFactoryImpl
         // get the location string (for searching by collection & community)
         List<String> locations = indexableCollectionService.
                 getCollectionLocations(context, inProgressSubmission.getCollection());
+        locations.add("l" + inProgressSubmission.getCollection().getID());
         indexableCollectionService.storeCommunityCollectionLocations(doc, locations);
     }
 }
